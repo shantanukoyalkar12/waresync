@@ -1,0 +1,98 @@
+/* Container for centering the form */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  /* Form styles */
+  .form-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Project label styling */
+  .project {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .project label {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007B38; /* Change color as needed */
+  }
+  
+  /* Form groups */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  /* Label styling */
+  .form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Input fields */
+  .form-group input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    transition: border-color 0.3s ease;
+  }
+  
+  /* Input field focus */
+  .form-group input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  /* Submit button */
+  .form-group button.submit-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: auto;
+
+  }
+  
+  /* Submit button hover effect */
+  .form-group button.submit-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Register button */
+  .form-group button.register-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #28a745;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px; /* Add space between buttons */
+  }
+  
+  /* Register button hover effect */
+  .form-group button.register-button:hover {
+    background-color: #218838;
+  }
+  
