@@ -8,6 +8,7 @@ export default function Login() {
     email: '',
     password: ''
   });
+  const [role,setRole]=useState('');
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -16,6 +17,9 @@ export default function Login() {
       [event.target.name]: event.target.value
     });
   };
+  const handleRole=(event)=>{
+    setRole(event.target.value);
+  }
   useEffect(() => {
     const token = localStorage.getItem('token');
     const isLoggedIn = localStorage.getItem('isLoggedIn');
@@ -28,19 +32,32 @@ export default function Login() {
     event.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:8080/owner/authowner', values, {
+      let endpoint = '';
+      if (role === 'owner') {
+        endpoint = 'http://localhost:8080/owner/authowner';
+      } else if (role === 'customer') {
+        endpoint = 'http://localhost:8080/customer/login';
+      }
+  
+      const response = await axios.post(endpoint, values, {
         headers: {
           'Content-Type': 'application/json',
         }
       });
-
+      console.log(response);
+      console.log(response.data.username)
       const { token } = response.data;
       if (token) {
         const decodedToken = jwtDecode(token);
         localStorage.setItem('token', token);
         localStorage.setItem('tokenExpiration', decodedToken.exp);
         localStorage.setItem('isLoggedIn', true);
-        navigate('/');
+        localStorage.setItem('username', decodedToken.username);
+        if(role=="owner"){
+          navigate('/');
+        }else{
+          navigate( '/cushome' );
+        }
       } else {
         navigate('/login')
         alert('Wrong email and password');
@@ -52,29 +69,35 @@ export default function Login() {
   };
 
   const registerPage = () => {
-    navigate('/signup');
+    if (role === 'owner') {
+      navigate('/Signup');
+    } else if (role === 'customer') {
+      navigate('/Signupcus');
+    }
   };
 
   return (
-    <div className="container">
-      <div className="form-container">
-    <form action="post" onSubmit={handleSubmit}>
-      <div className="project">
-        <label htmlFor="ProjectName">WARESYNC</label>
-      </div>
-      <div className="form-group">
+    <div className='first'>
+    <div className="login-form">
+      <h2>WARESYNC</h2>
+      <form onSubmit={handleSubmit}>
         <label htmlFor="email">Email:</label>
-        <input type="text" id="email" placeholder="Enter email" name="email" onChange={handleChange} />
-      </div>
-      <div className="form-group">
+        <input type="email" id="email" name="email" required onChange={handleChange} value={values.email} />
         <label htmlFor="password">Password:</label>
-        <input type="password" id="password" placeholder="Enter password" name="password" onChange={handleChange} />
-      </div>
-      <button type="submit" className='btn-btn-primary'>Submit</button>
-      <button onClick={registerPage} className='btn-btn-primary'>Register</button>
-    </form>
-  </div>
+        <input type="password" id="password" name="password" required onChange={handleChange} value={values.password} />
+        <div>
+          <label htmlFor="role">Role:</label>
+          <select id="role" name="role" value={values.role} onChange={handleRole}>
+            <option value="customer">Customer</option>
+            <option value="owner">Owner</option>
+          </select>
+        </div>
+        <button type="submit">Login</button>
+      </form>
+      {role && (
+          <p>Don't have an account? <a onClick={registerPage}>Register here</a></p>
+        )}
     </div>
-  
+  </div>
   );
 }

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import Warehouselist from './Warehouselist';
+import WarehouselistCustomer from './WarehouselistCustomer';
 import { useNavigate,Link } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import '../CssComp/navbar.css';
 import '../CssComp/home.css';
 import Warehouse from './Warehouse';
-export default function Home() {
+export default function CustomerHome() {
   const [name, setName] = useState('');
   const [tokens,setToken]=useState('');
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function Home() {
         const decodedToken = jwtDecode(token);
         setName(decodedToken.username);
         console.log(name);
-        navigate('/')
+        navigate('/cushome')
       } else {
         navigate('/login');
       }
@@ -44,7 +44,7 @@ export default function Home() {
       <nav className="NavBar"  >
       <ul>
         <li><h1>WARESYNC</h1></li>
-        <li> <Link to={{ pathname: "/add" }}>Add Warehouse</Link></li>
+        {/* <li> <Link to={{ pathname: "/add" }}>Add Warehouse</Link></li> */}
         {/* //<li><Link to="/profile">Profile</Link></li> */}
         <li>Welcome { name }</li>
         <li><button type="button" className="btn btn-danger" onClick={handleLogout}>Logout</button></li>
@@ -54,7 +54,7 @@ export default function Home() {
       
     </nav>
     <div className="warelist">
-      {<Warehouselist></Warehouselist>}
+      {<WarehouselistCustomer></WarehouselistCustomer>}
     </div>
     </div>
     </div>
