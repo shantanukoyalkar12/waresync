@@ -52,7 +52,7 @@ export default function Login() {
         localStorage.setItem('token', token);
         localStorage.setItem('tokenExpiration', decodedToken.exp);
         localStorage.setItem('isLoggedIn', true);
-        localStorage.setItem('username', decodedToken.username);
+        localStorage.setItem('username', response.data.username);
         if(role=="owner"){
           navigate('/');
         }else{

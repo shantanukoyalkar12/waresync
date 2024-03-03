@@ -8,6 +8,7 @@ import Home from './components/Home';
 import CustomerHome from './components/CustomerHome';
 import Update from './components/Update'
 import Signupcus from './components/Signupcus';
+import Book from './components/Book';
 function App() {
   return (
     <div className="App">
@@ -18,7 +19,7 @@ function App() {
       <Route path="/signup" element={<Signup></Signup>}/>
       <Route path="/signupcus" element={<Signupcus></Signupcus>}/>
       <Route path="/update/:id" element={<Update />} />
-
+      <Route path='/book' element={<Book></Book>}/>
       <Route path='/login' element={<Login></Login>}/>
       <Route path='/add' element={<Warehouse></Warehouse>}/>
       </Routes>

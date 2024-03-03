@@ -16,11 +16,12 @@ export default function CustomerHome() {
     console.log(token)
     const tokenExpiration = localStorage.getItem('tokenExpiration');
     const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const username = localStorage.getItem('username');
     if (token && tokenExpiration&&isLoggedIn) {
       const currentTime = Math.floor(Date.now() / 1000);
       if (currentTime < tokenExpiration) {
         const decodedToken = jwtDecode(token);
-        setName(decodedToken.username);
+        setName(username);
         console.log(name);
         navigate('/cushome')
       } else {

@@ -5,21 +5,26 @@ import { useNavigate } from 'react-router-dom';
 
 export default function WarehouseList() {
   const [warehouses, setWarehouses] = useState([]);
+  const [filteredWarehouses, setFilteredWarehouses] = useState([]);
   const [error, setError] = useState('');
+  const [searchName, setSearchName] = useState('');
+  const [searchPrice, setSearchPrice] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchWarehouses = async () => {
       try {
         const token = localStorage.getItem('token');
+        const username=localStorage.getItem('username')
+        console.log(username)
         const response = await axios.get('http://localhost:8080/warehouse/getwarehouse', {
           headers: {
             'Content-Type': 'application/json',
-          'Authorization': 'Bearer'+ ' '+ `${token}`,
+            'Authorization': 'Bearer ' + token,
           },
         });
         setWarehouses(response.data);
-        
+        setFilteredWarehouses(response.data);
       } catch (error) {
         console.error('Error fetching warehouses:', error);
         setError('Error fetching data');
@@ -28,32 +33,38 @@ export default function WarehouseList() {
 
     fetchWarehouses();
   }, []);
+ 
+  useEffect(() => {
+    const filterWarehouses = () => {
+      let filtered = warehouses;
+      if (searchName.trim() !== '') {
+        filtered = filtered.filter(warehouse =>
+          warehouse.warehouseName.toLowerCase().includes(searchName.toLowerCase())
+        );
+      }
+      if (searchPrice.trim() !== '') {
+        filtered = filtered.filter(warehouse => warehouse.price <= parseFloat(searchPrice));
+      }
+      setFilteredWarehouses(filtered);
+    };
 
-  const handleUpdate = (warehouse) => {
-    console.log(warehouse)
-    navigate(`/update/${warehouse}`);
+    filterWarehouses();
+  }, [searchName, searchPrice, warehouses]);
+
+  const handleUpdate = (warehouseId) => {
+    navigate(`/update/${warehouseId}`);
   };
-  
 
   const handleDelete = async (wareId) => {
-    console.log(warehouses.wareId)
     try {
-      if (!wareId) {
-        console.error('Warehouse ID is undefined');
-        return;
-      }
-      
       const token = localStorage.getItem('token');
-      console.log(token)
-      const response = await axios.delete(`http://localhost:8080/warehouse/delete/${wareId}`, {
+      await axios.delete(`http://localhost:8080/warehouse/delete/${wareId}`, {
         headers: {
-          'Authorization': 'Bearer'+ ' '+`${token}`
+          'Authorization': 'Bearer ' + token
         },
       });
-      console.log('Warehouse deleted successfully:', response.data);
-      navigate('/')
-      // Remove the deleted warehouse from the state
-      setWarehouses(warehouses.filter(warehouse => warehouse.id !== wareId));
+      setWarehouses(warehouses.filter(warehouse => warehouse.wareId !== wareId));
+      setFilteredWarehouses(filteredWarehouses.filter(warehouse => warehouse.wareId !== wareId));
     } catch (error) {
       console.error('Error deleting warehouse:', error);
       setError('Error deleting warehouse');
@@ -61,13 +72,34 @@ export default function WarehouseList() {
   };
 
   return (
-    <div class="warehouse-list">
-  <h2>Warehouse List</h2>
-  <div class="error">{error && <div>Error: {error}</div>}</div>
-  <ul>
-    {warehouses.map((warehouse) => (
-      <li key={warehouse.wareId}>
-        <div class="details-row">
+    <div>
+      <div>
+        <h2>Search by Warehouse Name:</h2>
+        <input
+          type="text"
+          placeholder="Enter warehouse name..."
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+        />
+      </div>
+      <div>
+        <h2>Search by Maximum Price:</h2>
+        <input
+          type="number"
+          placeholder="Enter maximum price..."
+          value={searchPrice}
+          onChange={(e) => setSearchPrice(e.target.value)}
+        />
+      </div>
+      <div className="warehouse-list">
+        <h2>Warehouse List</h2>
+        <div className="error">{error && <div>Error: {error}</div>}</div>
+        <ul>
+          {filteredWarehouses.map((warehouse) => (
+            <li key={warehouse.wareId}>
+              {/* Your warehouse details rendering code */}
+              {/* ... */}
+              <div class="details-row">
           <div class="detail-label">ID:</div>
           <div class="detail-value">{warehouse.wareId}</div>
         </div>
@@ -95,16 +127,14 @@ export default function WarehouseList() {
           <div class="detail-label">Owner:</div>
           <div class="detail-value">{warehouse.owner ? warehouse.owner.ownerName : 'Unknown'}</div>
         </div>
-        <div class="buttons-row">
-          <button class="update-button" onClick={() => handleUpdate(warehouse.wareId)}>Update</button>
-          <button class="delete-button" onClick={() => handleDelete(warehouse.wareId)}>Delete</button>
-        </div>
-      </li>
-    ))}
-  </ul>
-</div>
-
-
-
+              <div className="buttons-row">
+                <button className="update-button" onClick={() => handleUpdate(warehouse.wareId)}>Update</button>
+                <button className="delete-button" onClick={() => handleDelete(warehouse.wareId)}>Delete</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
